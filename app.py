@@ -1,3 +1,5 @@
+from tkinter import *
+
 import tkinter as tk
 from tkinter import ttk,messagebox
 
@@ -16,6 +18,7 @@ from pythonosc.osc_server import ThreadingOSCUDPServer
 
 from EEG_generate_training_matrix import gen_training_matrix
 
+warnaBg="#d4eaf7"
 namaFile='uji/uji-predict-0.csv'
 ip="0.0.0.0"
 port=5000
@@ -26,25 +29,41 @@ af8=0
 au=0
 
 waktuRekam=5
+
 def tampilanAwal():
     global frameAktual
     frameAktual.pack_forget()
     frameAwal.pack()
     frameAktual=frameAwal
     
-    labelWelcome=ttk.Label(frameAwal,text="Selamat Datang",font=("Arial",20,))
-    labelWelcome.grid(row=0,column=0, columnspan=2, padx=0, pady=25)
+    labelWelcome=ttk.Label(frameAwal,text="Selamat Datang",font=("Arial",20),background=warnaBg)
+    labelWelcome.grid(row=0,column=0, columnspan=2, padx=0, pady=(10,0))
+    labelWelcome1=ttk.Label(frameAwal,text="Di Aplikasi Electroenchepalography Emotion Recognition",font=("Arial",20),background=warnaBg)
+    labelWelcome1.grid(row=1,column=0, columnspan=2, padx=0, pady=(2,2))
     
-    labelKeterangan=ttk.Label(frameAwal,text="Silahkan klik tombol Berikut untuk melanjutkan menggunakan aplikasi ",font=("Arial",14),anchor="center")
-    labelKeterangan.grid(row=1,column=0, columnspan=2,padx=0)
-    labelKeterangan1=ttk.Label(frameAwal,text="dan klik tombol Tutup jika ingin menutup aplikasi",font=("Arial",14),anchor="center")
-    labelKeterangan1.grid(row=2,column=0, columnspan=2,padx=0)
+    gambar=Image.open('img/petunjuk.png')
+    foto=ImageTk.PhotoImage(gambar)
+        
+    label=ttk.Label(frameAwal,image=foto)
+    label.image=foto
+    label.grid(row=2,column=0,columnspan=2,padx=0,pady=(5,25))
     
-    tombolTutup=ttk.Button(frameAwal,text="Tutup",command=window.destroy)
-    tombolTutup.grid(row=3,column=0,pady=120)
+    labelKeterangan=ttk.Label(frameAwal,text="Silahkan klik tombol Berikut untuk melanjutkan menggunakan aplikasi ",font=("Arial",14),anchor="center",background=warnaBg)
+    labelKeterangan.grid(row=4,column=0, columnspan=2,padx=0,pady=(25,0))
+    # labelKeterangan1=ttk.Label(frameAwal,text="dan klik tombol Tutup jika ingin menutup aplikasi",font=("Arial",14),anchor="center",background=warnaBg)
+    # labelKeterangan1.grid(row=5,column=0, columnspan=2,padx=0)
     
-    tombolBerikut=ttk.Button(frameAwal,text="Berikut",command=lambda:tampilIsiData())
-    tombolBerikut.grid(row=3,column=1)
+    icon=PhotoImage(file="img/next.png")
+    iconImage=icon.subsample(7,7)
+    
+    # tombolTutup=ttk.Button(frameAwal,text="Tutup",command=window.destroy)
+    # tombolTutup.grid(row=6,column=0,pady=(35,0))
+    
+    style=ttk.Style()
+    style.configure("Custom.TButton",font="Arial 12 bold")
+    tombolBerikut=ttk.Button(frameAwal,text="Berikut",image=iconImage,compound=RIGHT,style="Custom.TButton",command=lambda:tampilIsiData())
+    tombolBerikut.image=iconImage
+    tombolBerikut.grid(row=6,column=1,pady=(35,0),sticky='e')
     
     
     
@@ -53,74 +72,78 @@ def tampilIsiData():
     frameAktual.pack_forget()
     frameIsiData.pack()
     frameAktual=frameIsiData
-    labelJudul=ttk.Label(frameIsiData,text="Silahkan isi data siswa", font=("Arial",14))
+    labelJudul=ttk.Label(frameIsiData,text="Silahkan Isi Data Siswa", font=("Arial",14),background=warnaBg)
     labelJudul.grid(row=0,column=0,padx=5,pady=25,columnspan=2)
     
     global inputNama
-    labelIsiNama=ttk.Label(frameIsiData,text="Nama :")
+    labelIsiNama=ttk.Label(frameIsiData,text="Nama :", font=("Arial",12),background=warnaBg)
     labelIsiNama.grid(row=1,column=0,sticky='w')
     inputNama=ttk.Entry(frameIsiData,width=23)
     inputNama.grid(row=1,column=1,pady=15 )
     
     global comboSex
-    labelIsiSex=ttk.Label(frameIsiData,text="Jenis Kelamin :")
+    labelIsiSex=ttk.Label(frameIsiData,text="Jenis Kelamin :", font=("Arial",12),background=warnaBg)
     labelIsiSex.grid(row=2,column=0,sticky='w')
     comboSex=ttk.Combobox(frameIsiData)
     comboSex['values']=('Laki-Laki','Perempuan')
     comboSex.grid(row=2,column=1,pady=15)
     
     global inputSekolah
-    labelSekolah=ttk.Label(frameIsiData,text="Asal Sekolah :")
+    labelSekolah=ttk.Label(frameIsiData,text="Asal Sekolah :", font=("Arial",12),background=warnaBg)
     labelSekolah.grid(row=3,column=0,sticky='w')
     inputSekolah=ttk.Entry(frameIsiData,width=23)
     inputSekolah.grid(row=3,column=1,pady=15)
     
-    tombolSebelum=ttk.Button(frameIsiData,text="Sebelumnya",command=lambda:tampilanAwal())
-    tombolSebelum.grid(row=4,column=0,sticky='w',pady=40)
+    style=ttk.Style()
+    style.configure("Custom.TButton",font="Arial 12 bold")
     
-    tombolBerikut=ttk.Button(frameIsiData,text="Berikut",command=lambda:tampilPetunjuk())
-    tombolBerikut.grid(row=4,column=1,sticky='e')
+    iconPrev=PhotoImage(file="img/home.png")
+    iconImagePrev=iconPrev.subsample(7,7)
+    tombolSebelum=ttk.Button(frameIsiData,text="Halaman Awal",image=iconImagePrev,compound=LEFT,style="Custom.TButton",command=lambda:tampilanAwal())
+    tombolSebelum.image=iconImagePrev
+    tombolSebelum.grid(row=4,column=0,sticky='w',padx=(0,30),pady=40)
+    
+    iconNext=PhotoImage(file="img/next.png")
+    iconImageNext=iconNext.subsample(7,7)
+    
+    tombolBerikut=ttk.Button(frameIsiData,text="Berikut",image=iconImageNext,compound=RIGHT,style="Custom.TButton",command=lambda:tampilRekamEEG())
+    tombolBerikut.image=iconImageNext
+    tombolBerikut.grid(row=4,column=1,sticky='e',padx=(30,0))
     
 def tampilPetunjuk():
-    if inputNama.get()=="" or inputSekolah.get()=="" or comboSex.get()=="" :
-        messagebox.showerror("Error", "Data Masih ada yang kosong")
-        tampilIsiData()
-    else :
-        global frameAktual
-        frameAktual.pack_forget()
-        framePetunjuk.pack()
-        frameAktual=framePetunjuk
+    global frameAktual
+    frameAktual.pack_forget()
+    framePetunjuk.pack()
+    frameAktual=framePetunjuk
             
-        labelPetunjuk=ttk.Label(framePetunjuk,text="Ikuti Petunjuk Berikut",font=("Arial",14))
-        labelPetunjuk.grid(row=0,column=0,columnspan=2,pady=25)
+    labelPetunjuk=ttk.Label(framePetunjuk,text="Ikuti Petunjuk Berikut",font=("Arial",14),background=warnaBg)
+    labelPetunjuk.grid(row=0,column=0,columnspan=2,pady=25)
         
-        label1=ttk.Label(framePetunjuk,text="1. Nyalakan Muse2 Headset",font=('Arial',11))
-        label1.grid(row=1,column=0,columnspan=2,pady=3,sticky='w')
+    label1=ttk.Label(framePetunjuk,text="1. Nyalakan Muse2 Headset",font=('Arial',11),background=warnaBg)
+    label1.grid(row=1,column=0,columnspan=2,pady=3,sticky='w')
         
-        label2=ttk.Label(framePetunjuk,text="2. Hubungkan Muse2 Headset dengan aplikasi Mind Monitor pada Smartphone",font=('Arial',11))
-        label2.grid(row=2,column=0,columnspan=2,pady=3,sticky='w')
+    label2=ttk.Label(framePetunjuk,text="2. Hubungkan Muse2 Headset dengan aplikasi Mind Monitor pada Smartphone",font=('Arial',11),background=warnaBg)
+    label2.grid(row=2,column=0,columnspan=2,pady=3,sticky='w')
         
-        label3=ttk.Label(framePetunjuk,text="3. Pasangkan Muse2 Headset pada siswa sesuai gambar dibawah berikut",font=('Arial',11),)
-        label3.grid(row=3,column=0,columnspan=2,pady=3,sticky='w')
+    label3=ttk.Label(framePetunjuk,text="3. Pasangkan Muse2 Headset pada siswa sesuai gambar dibawah berikut",font=('Arial',11),background=warnaBg)
+    label3.grid(row=3,column=0,columnspan=2,pady=3,sticky='w')
         
-        label4=ttk.Label(framePetunjuk,text="4. Pastikan Aplikasi Mind Monitor dalam 1 jaringan yang sama dengan Laptop/PC yang digunakan",font=('Arial',11))
-        label4.grid(row=5,column=0,columnspan=2,pady=3,sticky='w')
+    label4=ttk.Label(framePetunjuk,text="4. Pastikan Aplikasi Mind Monitor dalam 1 jaringan yang sama dengan Laptop/PC yang digunakan",font=('Arial',11),background=warnaBg)
+    label4.grid(row=5,column=0,columnspan=2,pady=3,sticky='w')
         
-        label5=ttk.Label(framePetunjuk,text="5. Tekan tombol streaming pada aplikasi Mind Monitor",font=('Arial',11))
-        label5.grid(row=6,column=0,columnspan=2,pady=3,sticky='w')
+    label5=ttk.Label(framePetunjuk,text="5. Tekan tombol streaming pada aplikasi Mind Monitor",font=('Arial',11),background=warnaBg)
+    label5.grid(row=6,column=0,columnspan=2,pady=3,sticky='w')
         
-        gambar=Image.open('img/petunjuk.png')
-        foto=ImageTk.PhotoImage(gambar)
+    gambar=Image.open('img/petunjuk.png')
+    foto=ImageTk.PhotoImage(gambar)
         
-        label=ttk.Label(framePetunjuk,image=foto)
-        label.image=foto
-        label.grid(row=4,column=0,sticky='w',padx=23)
+    label=ttk.Label(framePetunjuk,image=foto)
+    label.image=foto
+    label.grid(row=4,column=0,sticky='w',padx=23)
         
-        tombolSebelum=ttk.Button(framePetunjuk,text="Sebelumnya",command=lambda:tampilIsiData())
-        tombolSebelum.grid(row=7,column=0,pady=50,sticky='w' )
-        
-        tombolBerikut=ttk.Button(framePetunjuk,text="Berikut", command=lambda:tampilRekamEEG())
-        tombolBerikut.grid(row=7,column=1,sticky='e')
+ 
+    tombolBerikut=ttk.Button(framePetunjuk,text="Mulai", command=lambda:tampilIsiData())
+    tombolBerikut.grid(row=7,column=1,sticky='e')
     
 def tampilRekamEEG():
     global frameAktual
@@ -128,15 +151,15 @@ def tampilRekamEEG():
     frameRekamEEG.pack()
     frameAktual=frameRekamEEG
         
-    labelHeader=ttk.Label(frameRekamEEG,text="Prediksi Emosi",font=("Arial",14))
+    labelHeader=ttk.Label(frameRekamEEG,text="Prediksi Emosi",font=("Arial",14),background=warnaBg)
     labelHeader.grid(row=0,column=0,columnspan=2,pady=25)
     
-    labelPetunjuk1=ttk.Label(frameRekamEEG,text="1.Untuk memprediksi Emosi, tekan tombol Prediksi",font=('Arial',11))
+    labelPetunjuk1=ttk.Label(frameRekamEEG,text="1.Untuk memprediksi Emosi, tekan tombol Prediksi",font=('Arial',11),background=warnaBg)
     labelPetunjuk1.grid(row=1,column=0,columnspan=2,pady=3,sticky='w')
-    labelPetunjuk2=ttk.Label(frameRekamEEG,text="2.Mohon gerakan kepala dibatasi pada saat proses prediksi, karena akan mengganggu sinyal yang direkam.",font=('Arial',11))
+    labelPetunjuk2=ttk.Label(frameRekamEEG,text="2.Mohon gerakan kepala dibatasi pada saat proses prediksi, karena akan mengganggu sinyal yang direkam.",font=('Arial',11),background=warnaBg)
     labelPetunjuk2.grid(row=2,column=0,columnspan=2,pady=3,sticky='w')
     
-    tombolSebelum=ttk.Button(frameRekamEEG,text="Sebelumnya",command=lambda:tampilPetunjuk())
+    tombolSebelum=ttk.Button(frameRekamEEG,text="Sebelumnya",command=lambda:tampilIsiData())
     tombolSebelum.grid(row=3,column=0,pady=50,sticky='w' )
     
     global tombolMulai
@@ -294,23 +317,70 @@ def simpanDataCSV(emosi):
         writer=csv.writer(f,lineterminator='\n')
         data=[datetime.datetime.now(),inputNama.get(),comboSex.get(),inputSekolah.get(),emosi]
         writer.writerow(data)
-    
+
+
 window=tk.Tk()
 window.geometry("800x500")
 window.resizable(False,False)
 window.title("Aplikasi Pendeteksi Emosi")
+window['background']=warnaBg
 
-frameAwal=tk.Frame(window)
+
+
+frameAwal=tk.Frame(window, bg=warnaBg)
 frameAwal.pack()
 
-frameIsiData=tk.Frame(window)
-framePetunjuk=tk.Frame(window)
-frameRekamEEG=tk.Frame(window)
+frameIsiData=tk.Frame(window,bg=warnaBg)
+framePetunjuk=tk.Frame(window,bg=warnaBg)
+frameRekamEEG=tk.Frame(window,bg=warnaBg)
 
 
 
 frameAktual=frameAwal
 
 tampilanAwal()
+
+# menu
+# create a menubar
+menubar = Menu(window)
+window.config(menu=menubar)
+
+# create a menu
+file_menu = Menu(menubar,tearoff=0)
+help_menu=Menu(menubar,tearoff=0)
+
+# add a menu item to the menu
+icon=PhotoImage(file="img/home.png")
+iconImage=icon.subsample(10,10)
+file_menu.add_cascade(label='Halaman Awal',image=iconImage,compound=LEFT,command=lambda:tampilanAwal())
+
+icon1=PhotoImage(file="img/start.png")
+iconImage1=icon1.subsample(10,10)
+file_menu.add_cascade(label='Mulai',image=iconImage1,compound=LEFT,command=lambda:tampilIsiData())
+file_menu.add_separator()
+
+icon2=PhotoImage(file="img/exit.png")
+iconImage2=icon2.subsample(10,10)
+file_menu.add_cascade(label='Keluar',image=iconImage2,compound=LEFT,command=window.destroy)
+
+icon3=PhotoImage(file="img/book.png")
+iconImage3=icon3.subsample(10,10)
+help_menu.add_cascade(label='Petunjuk',image=iconImage3,compound=LEFT, command=lambda:tampilPetunjuk())
+help_menu.add_separator()
+
+icon4=PhotoImage(file="img/about.png")
+iconImage4=icon4.subsample(10,10)
+help_menu.add_cascade(label='Tentang Aplikasi',image=iconImage4,compound=LEFT,command=lambda:tampilPetunjuk())
+
+# add the File menu to the menubar
+menubar.add_cascade(
+    label="Berkas",
+    menu=file_menu
+)
+
+menubar.add_cascade(
+    label="Bantuan",
+    menu=help_menu
+)
 
 window.mainloop()
